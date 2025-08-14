@@ -91,15 +91,15 @@ function getInstructionName($opcode) {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
     <style>
         :root {
-            --primary: #2e7d32;
-            --primary-hover: #1b5e20;
+            --primary: var(--pico-color-green-800);
+            --primary-hover: var(--pico-color-green-900);
             --primary-focus: rgba(46, 125, 50, 0.125);
-            --primary-inverse: #FFF;
+            --primary-inverse: var(--pico-color-white);
         }
         
         body {
-            background-color: #1e1e1e;
-            color: #e0e0e0;
+            background-color: var(--pico-background-color);
+            color: var(--pico-color-slate-200);
             font-family: 'Courier New', Courier, monospace;
         }
         
@@ -108,16 +108,16 @@ function getInstructionName($opcode) {
         }
         
         .card {
-            background-color: #2d2d2d;
-            border: 1px solid #444;
+            background-color: var(--pico-card-background-color);
+            border: 1px solid var(--pico-border-color);
             border-radius: 8px;
             padding: 1.5rem;
             margin-bottom: 1.5rem;
         }
         
         .program {
-            background-color: #1e1e1e;
-            color: #2e7d32;
+            background-color: var(--pico-background-color);
+            color: var(--primary);
             padding: 1rem;
             border-radius: 5px;
             font-family: 'Courier New', Courier, monospace;
@@ -129,7 +129,7 @@ function getInstructionName($opcode) {
             border-left: 4px solid var(--primary);
             padding: 1rem 1.5rem;
             margin: 1rem 0;
-            background-color: #2a2a2a;
+            background-color: var(--pico-card-background-color);
         }
         
         .registers, .flags {
