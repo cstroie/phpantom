@@ -24,7 +24,7 @@ PHPantom is a complete Intel 8080 CPU emulator implemented in PHP. It accurately
 
 ## Installation
 
-Simply copy the `cpu.php` file to your project directory.
+Simply copy the `i8080.php` file to your project directory.
 
 ## Usage
 
@@ -32,7 +32,7 @@ Simply copy the `cpu.php` file to your project directory.
 
 ```php
 // Create a new emulator instance
-$cpu = new I8080Emulator();
+$cpu = new I8080();
 
 // Load a binary file at address 0x100
 $cpu->loadBinaryFile('program.bin', 0x100);
@@ -50,7 +50,7 @@ $registers = $cpu->getRegisters();
 echo "Register A: " . sprintf("0x%02X", $cpu->getRegister('A')) . "\n";
 
 // Inspect flags
-echo "Zero flag: " . ($cpu->getFlag(I8080Emulator::FLAG_Z) ? "Set" : "Clear") . "\n";
+echo "Zero flag: " . ($cpu->getFlag(I8080::FLAG_Z) ? "Set" : "Clear") . "\n";
 ```
 
 ### Loading Programs
@@ -95,7 +95,7 @@ The emulator supports all Intel 8080 instructions including:
 Run the built-in test to verify the emulator is working correctly:
 
 ```bash
-php cpu.php
+php i8080.php
 ```
 
 ## License
