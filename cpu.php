@@ -32,17 +32,17 @@
  */
 class I8080Emulator {
     // 8-bit registers
-    private $reg_a;  // Accumulator
-    private $reg_b;
-    private $reg_c;
-    private $reg_d;
-    private $reg_e;
-    private $reg_h;
-    private $reg_l;
+    private $regA;  // Accumulator
+    private $regB;
+    private $regC;
+    private $regD;
+    private $regE;
+    private $regH;
+    private $regL;
     
     // 16-bit registers
-    private $reg_sp;  // Stack pointer
-    private $reg_pc;  // Program counter
+    private $regSp;  // Stack pointer
+    private $regPc;  // Program counter
     
     // Flags register (8-bit)
     private $flags;  // S, Z, 0, AC, 0, P, 1, CY
@@ -68,15 +68,15 @@ class I8080Emulator {
      * Reset CPU to initial state
      */
     public function reset() {
-        $this->reg_a = 0;
-        $this->reg_b = 0;
-        $this->reg_c = 0;
-        $this->reg_d = 0;
-        $this->reg_e = 0;
-        $this->reg_h = 0;
-        $this->reg_l = 0;
-        $this->reg_sp = 0;
-        $this->reg_pc = 0;
+        $this->regA = 0;
+        $this->regB = 0;
+        $this->regC = 0;
+        $this->regD = 0;
+        $this->regE = 0;
+        $this->regH = 0;
+        $this->regL = 0;
+        $this->regSp = 0;
+        $this->regPc = 0;
         $this->flags = 0x02;  // Bit 1 is always 1
         
         // Initialize memory to zeros
@@ -88,15 +88,15 @@ class I8080Emulator {
      */
     public function getRegisters() {
         return array(
-            'A' => $this->reg_a,
-            'B' => $this->reg_b,
-            'C' => $this->reg_c,
-            'D' => $this->reg_d,
-            'E' => $this->reg_e,
-            'H' => $this->reg_h,
-            'L' => $this->reg_l,
-            'SP' => $this->reg_sp,
-            'PC' => $this->reg_pc,
+            'A' => $this->regA,
+            'B' => $this->regB,
+            'C' => $this->regC,
+            'D' => $this->regD,
+            'E' => $this->regE,
+            'H' => $this->regH,
+            'L' => $this->regL,
+            'SP' => $this->regSp,
+            'PC' => $this->regPc,
             'FLAGS' => $this->flags
         );
     }
@@ -106,15 +106,15 @@ class I8080Emulator {
      */
     public function getRegister($reg) {
         switch (strtoupper($reg)) {
-            case 'A': return $this->reg_a;
-            case 'B': return $this->reg_b;
-            case 'C': return $this->reg_c;
-            case 'D': return $this->reg_d;
-            case 'E': return $this->reg_e;
-            case 'H': return $this->reg_h;
-            case 'L': return $this->reg_l;
-            case 'SP': return $this->reg_sp;
-            case 'PC': return $this->reg_pc;
+            case 'A': return $this->regA;
+            case 'B': return $this->regB;
+            case 'C': return $this->regC;
+            case 'D': return $this->regD;
+            case 'E': return $this->regE;
+            case 'H': return $this->regH;
+            case 'L': return $this->regL;
+            case 'SP': return $this->regSp;
+            case 'PC': return $this->regPc;
             case 'FLAGS': return $this->flags;
             default: return null;
         }
@@ -127,15 +127,15 @@ class I8080Emulator {
         $value = $value & 0xFF;  // Ensure 8-bit
         
         switch (strtoupper($reg)) {
-            case 'A': $this->reg_a = $value; break;
-            case 'B': $this->reg_b = $value; break;
-            case 'C': $this->reg_c = $value; break;
-            case 'D': $this->reg_d = $value; break;
-            case 'E': $this->reg_e = $value; break;
-            case 'H': $this->reg_h = $value; break;
-            case 'L': $this->reg_l = $value; break;
-            case 'SP': $this->reg_sp = $value & 0xFFFF; break;  // 16-bit
-            case 'PC': $this->reg_pc = $value & 0xFFFF; break;  // 16-bit
+            case 'A': $this->regA = $value; break;
+            case 'B': $this->regB = $value; break;
+            case 'C': $this->regC = $value; break;
+            case 'D': $this->regD = $value; break;
+            case 'E': $this->regE = $value; break;
+            case 'H': $this->regH = $value; break;
+            case 'L': $this->regL = $value; break;
+            case 'SP': $this->regSp = $value & 0xFFFF; break;  // 16-bit
+            case 'PC': $this->regPc = $value & 0xFFFF; break;  // 16-bit
         }
     }
     
@@ -207,11 +207,11 @@ class I8080Emulator {
      */
     public function getRegisterPair($pair) {
         switch (strtoupper($pair)) {
-            case 'BC': return ($this->reg_b << 8) | $this->reg_c;
-            case 'DE': return ($this->reg_d << 8) | $this->reg_e;
-            case 'HL': return ($this->reg_h << 8) | $this->reg_l;
-            case 'SP': return $this->reg_sp;
-            case 'PC': return $this->reg_pc;
+            case 'BC': return ($this->regB << 8) | $this->regC;
+            case 'DE': return ($this->regD << 8) | $this->regE;
+            case 'HL': return ($this->regH << 8) | $this->regL;
+            case 'SP': return $this->regSp;
+            case 'PC': return $this->regPc;
             default: return 0;
         }
     }
@@ -224,22 +224,22 @@ class I8080Emulator {
         
         switch (strtoupper($pair)) {
             case 'BC':
-                $this->reg_b = ($value >> 8) & 0xFF;
-                $this->reg_c = $value & 0xFF;
+                $this->regB = ($value >> 8) & 0xFF;
+                $this->regC = $value & 0xFF;
                 break;
             case 'DE':
-                $this->reg_d = ($value >> 8) & 0xFF;
-                $this->reg_e = $value & 0xFF;
+                $this->regD = ($value >> 8) & 0xFF;
+                $this->regE = $value & 0xFF;
                 break;
             case 'HL':
-                $this->reg_h = ($value >> 8) & 0xFF;
-                $this->reg_l = $value & 0xFF;
+                $this->regH = ($value >> 8) & 0xFF;
+                $this->regL = $value & 0xFF;
                 break;
             case 'SP':
-                $this->reg_sp = $value;
+                $this->regSp = $value;
                 break;
             case 'PC':
-                $this->reg_pc = $value;
+                $this->regPc = $value;
                 break;
         }
     }
@@ -269,8 +269,8 @@ class I8080Emulator {
      */
     public function step() {
         // Fetch the opcode
-        $opcode = $this->memory[$this->reg_pc];
-        $this->reg_pc = ($this->reg_pc + 1) & 0xFFFF;
+        $opcode = $this->memory[$this->regPc];
+        $this->regPc = ($this->regPc + 1) & 0xFFFF;
         
         // Execute the opcode
         switch ($opcode) {
@@ -278,150 +278,150 @@ class I8080Emulator {
             case 0x7F: // MOV A,A
                 break;
             case 0x78: // MOV A,B
-                $this->reg_a = $this->reg_b;
+                $this->regA = $this->regB;
                 break;
             case 0x79: // MOV A,C
-                $this->reg_a = $this->reg_c;
+                $this->regA = $this->regC;
                 break;
             case 0x7A: // MOV A,D
-                $this->reg_a = $this->reg_d;
+                $this->regA = $this->regD;
                 break;
             case 0x7B: // MOV A,E
-                $this->reg_a = $this->reg_e;
+                $this->regA = $this->regE;
                 break;
             case 0x7C: // MOV A,H
-                $this->reg_a = $this->reg_h;
+                $this->regA = $this->regH;
                 break;
             case 0x7D: // MOV A,L
-                $this->reg_a = $this->reg_l;
+                $this->regA = $this->regL;
                 break;
             case 0x7E: // MOV A,M
-                $addr = ($this->reg_h << 8) | $this->reg_l;
-                $this->reg_a = $this->memory[$addr];
+                $addr = ($this->regH << 8) | $this->regL;
+                $this->regA = $this->memory[$addr];
                 break;
             case 0x40: // MOV B,B
                 break;
             case 0x41: // MOV B,C
-                $this->reg_b = $this->reg_c;
+                $this->regB = $this->regC;
                 break;
             case 0x42: // MOV B,D
-                $this->reg_b = $this->reg_d;
+                $this->regB = $this->regD;
                 break;
             case 0x43: // MOV B,E
-                $this->reg_b = $this->reg_e;
+                $this->regB = $this->regE;
                 break;
             case 0x44: // MOV B,H
-                $this->reg_b = $this->reg_h;
+                $this->regB = $this->regH;
                 break;
             case 0x45: // MOV B,L
-                $this->reg_b = $this->reg_l;
+                $this->regB = $this->regL;
                 break;
             case 0x46: // MOV B,M
-                $addr = ($this->reg_h << 8) | $this->reg_l;
-                $this->reg_b = $this->memory[$addr];
+                $addr = ($this->regH << 8) | $this->regL;
+                $this->regB = $this->memory[$addr];
                 break;
             case 0x47: // MOV B,A
-                $this->reg_b = $this->reg_a;
+                $this->regB = $this->regA;
                 break;
             case 0x48: // MOV C,B
-                $this->reg_c = $this->reg_b;
+                $this->regC = $this->regB;
                 break;
             case 0x49: // MOV C,C
                 break;
             case 0x4A: // MOV C,D
-                $this->reg_c = $this->reg_d;
+                $this->regC = $this->regD;
                 break;
             case 0x4B: // MOV C,E
-                $this->reg_c = $this->reg_e;
+                $this->regC = $this->regE;
                 break;
             case 0x4C: // MOV C,H
-                $this->reg_c = $this->reg_h;
+                $this->regC = $this->regH;
                 break;
             case 0x4D: // MOV C,L
-                $this->reg_c = $this->reg_l;
+                $this->regC = $this->regL;
                 break;
             case 0x4E: // MOV C,M
-                $addr = ($this->reg_h << 8) | $this->reg_l;
-                $this->reg_c = $this->memory[$addr];
+                $addr = ($this->regH << 8) | $this->regL;
+                $this->regC = $this->memory[$addr];
                 break;
             case 0x4F: // MOV C,A
-                $this->reg_c = $this->reg_a;
+                $this->regC = $this->regA;
                 break;
                 
             // Arithmetic instructions
             case 0x80: // ADD B
-                $this->add($this->reg_b);
+                $this->add($this->regB);
                 break;
             case 0x81: // ADD C
-                $this->add($this->reg_c);
+                $this->add($this->regC);
                 break;
             case 0x82: // ADD D
-                $this->add($this->reg_d);
+                $this->add($this->regD);
                 break;
             case 0x83: // ADD E
-                $this->add($this->reg_e);
+                $this->add($this->regE);
                 break;
             case 0x84: // ADD H
-                $this->add($this->reg_h);
+                $this->add($this->regH);
                 break;
             case 0x85: // ADD L
-                $this->add($this->reg_l);
+                $this->add($this->regL);
                 break;
             case 0x86: // ADD M
-                $addr = ($this->reg_h << 8) | $this->reg_l;
+                $addr = ($this->regH << 8) | $this->regL;
                 $this->add($this->memory[$addr]);
                 break;
             case 0x87: // ADD A
-                $this->add($this->reg_a);
+                $this->add($this->regA);
                 break;
                 
             // Immediate instructions
             case 0x3E: // MVI A,byte
-                $this->reg_a = $this->memory[$this->reg_pc];
-                $this->reg_pc = ($this->reg_pc + 1) & 0xFFFF;
+                $this->regA = $this->memory[$this->regPc];
+                $this->regPc = ($this->regPc + 1) & 0xFFFF;
                 break;
             case 0x06: // MVI B,byte
-                $this->reg_b = $this->memory[$this->reg_pc];
-                $this->reg_pc = ($this->reg_pc + 1) & 0xFFFF;
+                $this->regB = $this->memory[$this->regPc];
+                $this->regPc = ($this->regPc + 1) & 0xFFFF;
                 break;
             case 0x0E: // MVI C,byte
-                $this->reg_c = $this->memory[$this->reg_pc];
-                $this->reg_pc = ($this->reg_pc + 1) & 0xFFFF;
+                $this->regC = $this->memory[$this->regPc];
+                $this->regPc = ($this->regPc + 1) & 0xFFFF;
                 break;
             case 0x16: // MVI D,byte
-                $this->reg_d = $this->memory[$this->reg_pc];
-                $this->reg_pc = ($this->reg_pc + 1) & 0xFFFF;
+                $this->regD = $this->memory[$this->regPc];
+                $this->regPc = ($this->regPc + 1) & 0xFFFF;
                 break;
             case 0x1E: // MVI E,byte
-                $this->reg_e = $this->memory[$this->reg_pc];
-                $this->reg_pc = ($this->reg_pc + 1) & 0xFFFF;
+                $this->regE = $this->memory[$this->regPc];
+                $this->regPc = ($this->regPc + 1) & 0xFFFF;
                 break;
             case 0x26: // MVI H,byte
-                $this->reg_h = $this->memory[$this->reg_pc];
-                $this->reg_pc = ($this->reg_pc + 1) & 0xFFFF;
+                $this->regH = $this->memory[$this->regPc];
+                $this->regPc = ($this->regPc + 1) & 0xFFFF;
                 break;
             case 0x2E: // MVI L,byte
-                $this->reg_l = $this->memory[$this->reg_pc];
-                $this->reg_pc = ($this->reg_pc + 1) & 0xFFFF;
+                $this->regL = $this->memory[$this->regPc];
+                $this->regPc = ($this->regPc + 1) & 0xFFFF;
                 break;
             case 0x36: // MVI M,byte
-                $addr = ($this->reg_h << 8) | $this->reg_l;
-                $this->memory[$addr] = $this->memory[$this->reg_pc];
-                $this->reg_pc = ($this->reg_pc + 1) & 0xFFFF;
+                $addr = ($this->regH << 8) | $this->regL;
+                $this->memory[$addr] = $this->memory[$this->regPc];
+                $this->regPc = ($this->regPc + 1) & 0xFFFF;
                 break;
                 
             // Register or memory to accumulator instructions
             case 0xC6: // ADI byte
-                $value = $this->memory[$this->reg_pc];
-                $this->reg_pc = ($this->reg_pc + 1) & 0xFFFF;
+                $value = $this->memory[$this->regPc];
+                $this->regPc = ($this->regPc + 1) & 0xFFFF;
                 $this->add($value);
                 break;
                 
             // Jump instructions
             case 0xC3: // JMP address
-                $low = $this->memory[$this->reg_pc];
-                $high = $this->memory[($this->reg_pc + 1) & 0xFFFF];
-                $this->reg_pc = ($high << 8) | $low;
+                $low = $this->memory[$this->regPc];
+                $high = $this->memory[($this->regPc + 1) & 0xFFFF];
+                $this->regPc = ($high << 8) | $low;
                 break;
                 
             // NOP
@@ -443,7 +443,7 @@ class I8080Emulator {
      * Helper function for ADD instruction
      */
     private function add($value) {
-        $result = $this->reg_a + $value;
+        $result = $this->regA + $value;
         
         // Set flags
         $this->setFlag(self::FLAG_S, ($result & 0x80) != 0);
@@ -451,7 +451,7 @@ class I8080Emulator {
         $this->setFlag(self::FLAG_CY, $result > 0xFF);
         
         // Auxiliary carry flag (carry from bit 3 to bit 4)
-        $ac = (($this->reg_a & 0x0F) + ($value & 0x0F)) > 0x0F;
+        $ac = (($this->regA & 0x0F) + ($value & 0x0F)) > 0x0F;
         $this->setFlag(self::FLAG_AC, $ac);
         
         // Parity flag (even parity)
@@ -463,7 +463,7 @@ class I8080Emulator {
         }
         $this->setFlag(self::FLAG_P, $parity == 0);
         
-        $this->reg_a = $result & 0xFF;
+        $this->regA = $result & 0xFF;
     }
 }
 
