@@ -606,6 +606,13 @@ class AltairCPMSystem {
     }
     
     /**
+     * Get registers from the Altair CPU
+     */
+    public function getRegisters() {
+        return $this->altair->getRegisters();
+    }
+    
+    /**
      * Send input to system
      */
     public function sendInput($input) {
@@ -641,13 +648,6 @@ function test_altair() {
             echo sprintf("%-3s: 0x%04X (%d)\n", $reg, $value, $value);
         }
     }
-}
-
-/**
- * Get registers from the Altair CPU
- */
-function getRegisters() {
-    return $this->altair->getRegisters();
 }
 
 // Run the test if this file is executed directly
