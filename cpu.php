@@ -9,7 +9,7 @@
  * @copyright   2025 Costin Stroie
  * @license     http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  * @version     1.0.0
- * @link        https://github.com/yourusername/phpantom
+ * @link        https://github.com/cstroie/phpantom
  */
 
 /**
