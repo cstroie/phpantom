@@ -172,6 +172,37 @@ class I8080Emulator {
     }
     
     /**
+     * Load a binary file into memory at a specific address
+     * 
+     * @param string $filename Path to the binary file
+     * @param int $startAddress Memory address to load the file at
+     * @return bool True on success, false on failure
+     */
+    public function loadBinaryFile($filename, $startAddress) {
+        // Check if file exists
+        if (!file_exists($filename)) {
+            return false;
+        }
+        
+        // Read the binary file
+        $data = file_get_contents($filename);
+        if ($data === false) {
+            return false;
+        }
+        
+        // Convert binary string to array of bytes
+        $byteArray = array();
+        for ($i = 0; $i < strlen($data); $i++) {
+            $byteArray[] = ord($data[$i]);
+        }
+        
+        // Load the data into memory
+        $this->loadMemoryBlock($startAddress, $byteArray);
+        
+        return true;
+    }
+    
+    /**
      * Get 16-bit register pair value
      */
     public function getRegisterPair($pair) {
