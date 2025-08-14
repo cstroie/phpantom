@@ -91,9 +91,9 @@ function getInstructionName($opcode) {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
     <style>
         :root {
-            --primary: #4CAF50;
-            --primary-hover: #45a049;
-            --primary-focus: rgba(76, 175, 80, 0.125);
+            --primary: #2e7d32;
+            --primary-hover: #1b5e20;
+            --primary-focus: rgba(46, 125, 50, 0.125);
             --primary-inverse: #FFF;
         }
         
@@ -117,7 +117,7 @@ function getInstructionName($opcode) {
         
         .program {
             background-color: #1e1e1e;
-            color: #4CAF50;
+            color: #2e7d32;
             padding: 1rem;
             border-radius: 5px;
             font-family: 'Courier New', Courier, monospace;
@@ -153,20 +153,20 @@ function getInstructionName($opcode) {
         }
         
         h1, h2, h3, h4, h5 {
-            color: #4CAF50;
+            color: #2e7d32;
         }
         
         a {
-            color: #4CAF50;
+            color: #2e7d32;
         }
         
         a:hover {
-            color: #45a049;
+            color: #1b5e20;
         }
         
         code {
             background-color: #1e1e1e;
-            color: #4CAF50;
+            color: #2e7d32;
         }
     </style>
 </head>
