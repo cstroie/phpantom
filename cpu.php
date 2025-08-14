@@ -437,4 +437,55 @@ function get_cpu_info() {
     return $cpu_info;
 }
 
+// Test the emulator
+function test_emulator() {
+    echo "Testing I8080 Emulator\n";
+    echo "=====================\n";
+    
+    // Create emulator instance
+    $cpu = new I8080Emulator();
+    
+    // Load a simple program:
+    // MVI A, 0x05    ; Load 5 into register A
+    // MVI B, 0x03    ; Load 3 into register B
+    // ADD B          ; Add B to A
+    // HLT            ; Halt
+    
+    $cpu->setMemory(0x0000, 0x3E);  // MVI A, 0x05
+    $cpu->setMemory(0x0001, 0x05);
+    $cpu->setMemory(0x0002, 0x06);  // MVI B, 0x03
+    $cpu->setMemory(0x0003, 0x03);
+    $cpu->setMemory(0x0004, 0x80);  // ADD B
+    $cpu->setMemory(0x0005, 0x76);  // HLT
+    
+    echo "Initial state:\n";
+    print_r($cpu->getRegisters());
+    
+    echo "\nExecuting program...\n";
+    
+    // Execute 6 instructions
+    for ($i = 0; $i < 6; $i++) {
+        echo "Step " . ($i+1) . ": PC=" . sprintf("0x%04X", $cpu->getRegister('PC')) . 
+             ", Opcode=" . sprintf("0x%02X", $cpu->getMemory($cpu->getRegister('PC'))) . "\n";
+        $cpu->step();
+    }
+    
+    echo "\nFinal state:\n";
+    print_r($cpu->getRegisters());
+    
+    echo "Result: A = " . $cpu->getRegister('A') . " (0x" . sprintf("%02X", $cpu->getRegister('A')) . ")\n";
+    
+    // Check flags
+    echo "Flags - S:" . ($cpu->getFlag(I8080Emulator::FLAG_S) ? "1" : "0") . 
+         " Z:" . ($cpu->getFlag(I8080Emulator::FLAG_Z) ? "1" : "0") . 
+         " AC:" . ($cpu->getFlag(I8080Emulator::FLAG_AC) ? "1" : "0") . 
+         " P:" . ($cpu->getFlag(I8080Emulator::FLAG_P) ? "1" : "0") . 
+         " CY:" . ($cpu->getFlag(I8080Emulator::FLAG_CY) ? "1" : "0") . "\n";
+}
+
+// Run the test if this file is executed directly
+if (basename(__FILE__) == basename($_SERVER['SCRIPT_NAME'])) {
+    test_emulator();
+}
+
 ?>
