@@ -277,6 +277,22 @@ class I8080Emulator {
         // Execute the opcode
         switch ($opcode) {
             // Data transfer instructions
+            case 0x02: // STAX B
+                $addr = ($this->regB << 8) | $this->regC;
+                $this->memory[$addr] = $this->regA;
+                break;
+            case 0x0A: // LDAX B
+                $addr = ($this->regB << 8) | $this->regC;
+                $this->regA = $this->memory[$addr];
+                break;
+            case 0x12: // STAX D
+                $addr = ($this->regD << 8) | $this->regE;
+                $this->memory[$addr] = $this->regA;
+                break;
+            case 0x1A: // LDAX D
+                $addr = ($this->regD << 8) | $this->regE;
+                $this->regA = $this->memory[$addr];
+                break;
             case 0x7F: // MOV A,A
                 break;
             case 0x78: // MOV A,B
@@ -677,6 +693,33 @@ class I8080Emulator {
                 break;
                 
             // Immediate instructions
+            case 0x01: // LXI B, data16
+                $low = $this->memory[$this->regPC];
+                $high = $this->memory[($this->regPC + 1) & 0xFFFF];
+                $this->regPC = ($this->regPC + 2) & 0xFFFF;
+                $this->regB = $high;
+                $this->regC = $low;
+                break;
+            case 0x11: // LXI D, data16
+                $low = $this->memory[$this->regPC];
+                $high = $this->memory[($this->regPC + 1) & 0xFFFF];
+                $this->regPC = ($this->regPC + 2) & 0xFFFF;
+                $this->regD = $high;
+                $this->regE = $low;
+                break;
+            case 0x21: // LXI H, data16
+                $low = $this->memory[$this->regPC];
+                $high = $this->memory[($this->regPC + 1) & 0xFFFF];
+                $this->regPC = ($this->regPC + 2) & 0xFFFF;
+                $this->regH = $high;
+                $this->regL = $low;
+                break;
+            case 0x31: // LXI SP, data16
+                $low = $this->memory[$this->regPC];
+                $high = $this->memory[($this->regPC + 1) & 0xFFFF];
+                $this->regPC = ($this->regPC + 2) & 0xFFFF;
+                $this->regSP = ($high << 8) | $low;
+                break;
             case 0x3E: // MVI A,byte
                 $this->regA = $this->memory[$this->regPC];
                 $this->regPC = ($this->regPC + 1) & 0xFFFF;
@@ -749,6 +792,38 @@ class I8080Emulator {
                 $value = $this->memory[$this->regPC];
                 $this->regPC = ($this->regPC + 1) & 0xFFFF;
                 $this->cmp($value);
+                break;
+                
+            // Load/Store instructions
+            case 0x22: // SHLD addr
+                $low = $this->memory[$this->regPC];
+                $high = $this->memory[($this->regPC + 1) & 0xFFFF];
+                $addr = ($high << 8) | $low;
+                $this->regPC = ($this->regPC + 2) & 0xFFFF;
+                $this->memory[$addr] = $this->regL;
+                $this->memory[($addr + 1) & 0xFFFF] = $this->regH;
+                break;
+            case 0x2A: // LHLD addr
+                $low = $this->memory[$this->regPC];
+                $high = $this->memory[($this->regPC + 1) & 0xFFFF];
+                $addr = ($high << 8) | $low;
+                $this->regPC = ($this->regPC + 2) & 0xFFFF;
+                $this->regL = $this->memory[$addr];
+                $this->regH = $this->memory[($addr + 1) & 0xFFFF];
+                break;
+            case 0x32: // STA addr
+                $low = $this->memory[$this->regPC];
+                $high = $this->memory[($this->regPC + 1) & 0xFFFF];
+                $addr = ($high << 8) | $low;
+                $this->regPC = ($this->regPC + 2) & 0xFFFF;
+                $this->memory[$addr] = $this->regA;
+                break;
+            case 0x3A: // LDA addr
+                $low = $this->memory[$this->regPC];
+                $high = $this->memory[($this->regPC + 1) & 0xFFFF];
+                $addr = ($high << 8) | $low;
+                $this->regPC = ($this->regPC + 2) & 0xFFFF;
+                $this->regA = $this->memory[$addr];
                 break;
                 
             // Jump instructions
@@ -1010,6 +1085,19 @@ class I8080Emulator {
                 break;
                 
             // Restart instructions
+            case 0xC0: // RST 0
+            case 0xC8: // RST 1
+            case 0xD0: // RST 2
+            case 0xD8: // RST 3
+            case 0xE0: // RST 4
+            case 0xE8: // RST 5
+            case 0xF0: // RST 6
+            case 0xF8: // RST 7
+                $this->memory[($this->regSP - 1) & 0xFFFF] = ($this->regPC >> 8) & 0xFF;
+                $this->memory[($this->regSP - 2) & 0xFFFF] = $this->regPC & 0xFF;
+                $this->regSP = ($this->regSP - 2) & 0xFFFF;
+                $this->regPC = (($opcode >> 3) & 0x07) * 8;
+                break;
             case 0xC7: // RST 0
                 $this->memory[($this->regSP - 1) & 0xFFFF] = ($this->regPC >> 8) & 0xFF;
                 $this->memory[($this->regSP - 2) & 0xFFFF] = $this->regPC & 0xFF;
@@ -1124,6 +1212,16 @@ class I8080Emulator {
                 break;
             case 0xF9: // SPHL
                 $this->regSP = ($this->regH << 8) | $this->regL;
+                break;
+                
+            // Undocumented NOP instructions
+            case 0x08: // NOP
+            case 0x10: // NOP
+            case 0x18: // NOP
+            case 0x20: // NOP
+            case 0x28: // NOP
+            case 0x30: // NOP
+            case 0x38: // NOP
                 break;
                 
             // Increment register pair instructions
