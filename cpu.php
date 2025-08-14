@@ -465,6 +465,290 @@ class I8080Emulator {
         
         $this->regA = $result & 0xFF;
     }
+    
+    /**
+     * Helper function for ADC instruction
+     */
+    private function adc($value) {
+        $cy = $this->getFlag(self::FLAG_CY) ? 1 : 0;
+        $result = $this->regA + $value + $cy;
+        
+        // Set flags
+        $this->setFlag(self::FLAG_S, ($result & 0x80) != 0);
+        $this->setFlag(self::FLAG_Z, ($result & 0xFF) == 0);
+        $this->setFlag(self::FLAG_CY, $result > 0xFF);
+        
+        // Auxiliary carry flag
+        $ac = (($this->regA & 0x0F) + ($value & 0x0F) + $cy) > 0x0F;
+        $this->setFlag(self::FLAG_AC, $ac);
+        
+        // Parity flag
+        $parity = 0;
+        $temp = $result & 0xFF;
+        for ($i = 0; $i < 8; $i++) {
+            $parity ^= ($temp & 1);
+            $temp >>= 1;
+        }
+        $this->setFlag(self::FLAG_P, $parity == 0);
+        
+        $this->regA = $result & 0xFF;
+    }
+    
+    /**
+     * Helper function for SUB instruction
+     */
+    private function sub($value) {
+        $result = $this->regA - $value;
+        
+        // Set flags
+        $this->setFlag(self::FLAG_S, ($result & 0x80) != 0);
+        $this->setFlag(self::FLAG_Z, ($result & 0xFF) == 0);
+        $this->setFlag(self::FLAG_CY, $result < 0);
+        
+        // Auxiliary carry flag
+        $ac = ($this->regA & 0x0F) < ($value & 0x0F);
+        $this->setFlag(self::FLAG_AC, $ac);
+        
+        // Parity flag
+        $parity = 0;
+        $temp = $result & 0xFF;
+        for ($i = 0; $i < 8; $i++) {
+            $parity ^= ($temp & 1);
+            $temp >>= 1;
+        }
+        $this->setFlag(self::FLAG_P, $parity == 0);
+        
+        $this->regA = $result & 0xFF;
+    }
+    
+    /**
+     * Helper function for SBB instruction
+     */
+    private function sbb($value) {
+        $cy = $this->getFlag(self::FLAG_CY) ? 1 : 0;
+        $result = $this->regA - $value - $cy;
+        
+        // Set flags
+        $this->setFlag(self::FLAG_S, ($result & 0x80) != 0);
+        $this->setFlag(self::FLAG_Z, ($result & 0xFF) == 0);
+        $this->setFlag(self::FLAG_CY, $result < 0);
+        
+        // Auxiliary carry flag
+        $ac = ($this->regA & 0x0F) < (($value & 0x0F) + $cy);
+        $this->setFlag(self::FLAG_AC, $ac);
+        
+        // Parity flag
+        $parity = 0;
+        $temp = $result & 0xFF;
+        for ($i = 0; $i < 8; $i++) {
+            $parity ^= ($temp & 1);
+            $temp >>= 1;
+        }
+        $this->setFlag(self::FLAG_P, $parity == 0);
+        
+        $this->regA = $result & 0xFF;
+    }
+    
+    /**
+     * Helper function for ANA instruction
+     */
+    private function ana($value) {
+        $result = $this->regA & $value;
+        
+        // Set flags
+        $this->setFlag(self::FLAG_S, ($result & 0x80) != 0);
+        $this->setFlag(self::FLAG_Z, $result == 0);
+        $this->setFlag(self::FLAG_AC, (($this->regA | $value) & 0x08) != 0);
+        $this->setFlag(self::FLAG_CY, false);
+        
+        // Parity flag
+        $parity = 0;
+        $temp = $result;
+        for ($i = 0; $i < 8; $i++) {
+            $parity ^= ($temp & 1);
+            $temp >>= 1;
+        }
+        $this->setFlag(self::FLAG_P, $parity == 0);
+        
+        $this->regA = $result;
+    }
+    
+    /**
+     * Helper function for XRA instruction
+     */
+    private function xra($value) {
+        $result = $this->regA ^ $value;
+        
+        // Set flags
+        $this->setFlag(self::FLAG_S, ($result & 0x80) != 0);
+        $this->setFlag(self::FLAG_Z, $result == 0);
+        $this->setFlag(self::FLAG_AC, false);
+        $this->setFlag(self::FLAG_CY, false);
+        
+        // Parity flag
+        $parity = 0;
+        $temp = $result;
+        for ($i = 0; $i < 8; $i++) {
+            $parity ^= ($temp & 1);
+            $temp >>= 1;
+        }
+        $this->setFlag(self::FLAG_P, $parity == 0);
+        
+        $this->regA = $result;
+    }
+    
+    /**
+     * Helper function for ORA instruction
+     */
+    private function ora($value) {
+        $result = $this->regA | $value;
+        
+        // Set flags
+        $this->setFlag(self::FLAG_S, ($result & 0x80) != 0);
+        $this->setFlag(self::FLAG_Z, $result == 0);
+        $this->setFlag(self::FLAG_AC, false);
+        $this->setFlag(self::FLAG_CY, false);
+        
+        // Parity flag
+        $parity = 0;
+        $temp = $result;
+        for ($i = 0; $i < 8; $i++) {
+            $parity ^= ($temp & 1);
+            $temp >>= 1;
+        }
+        $this->setFlag(self::FLAG_P, $parity == 0);
+        
+        $this->regA = $result;
+    }
+    
+    /**
+     * Helper function for CMP instruction
+     */
+    private function cmp($value) {
+        $result = $this->regA - $value;
+        
+        // Set flags
+        $this->setFlag(self::FLAG_S, ($result & 0x80) != 0);
+        $this->setFlag(self::FLAG_Z, ($result & 0xFF) == 0);
+        $this->setFlag(self::FLAG_CY, $result < 0);
+        
+        // Auxiliary carry flag
+        $ac = ($this->regA & 0x0F) < ($value & 0x0F);
+        $this->setFlag(self::FLAG_AC, $ac);
+        
+        // Parity flag
+        $parity = 0;
+        $temp = $result & 0xFF;
+        for ($i = 0; $i < 8; $i++) {
+            $parity ^= ($temp & 1);
+            $temp >>= 1;
+        }
+        $this->setFlag(self::FLAG_P, $parity == 0);
+    }
+    
+    /**
+     * Helper function for INR instruction
+     */
+    private function inr($reg) {
+        $value = $this->getRegister($reg);
+        $result = ($value + 1) & 0xFF;
+        $this->setRegister($reg, $result);
+        
+        // Set flags (except carry)
+        $this->setFlag(self::FLAG_S, ($result & 0x80) != 0);
+        $this->setFlag(self::FLAG_Z, $result == 0);
+        $ac = (($value & 0x0F) + 1) > 0x0F;
+        $this->setFlag(self::FLAG_AC, $ac);
+        
+        // Parity flag
+        $parity = 0;
+        $temp = $result;
+        for ($i = 0; $i < 8; $i++) {
+            $parity ^= ($temp & 1);
+            $temp >>= 1;
+        }
+        $this->setFlag(self::FLAG_P, $parity == 0);
+    }
+    
+    /**
+     * Helper function for DCR instruction
+     */
+    private function dcr($reg) {
+        $value = $this->getRegister($reg);
+        $result = ($value - 1) & 0xFF;
+        $this->setRegister($reg, $result);
+        
+        // Set flags (except carry)
+        $this->setFlag(self::FLAG_S, ($result & 0x80) != 0);
+        $this->setFlag(self::FLAG_Z, $result == 0);
+        $ac = ($value & 0x0F) < 1;
+        $this->setFlag(self::FLAG_AC, $ac);
+        
+        // Parity flag
+        $parity = 0;
+        $temp = $result;
+        for ($i = 0; $i < 8; $i++) {
+            $parity ^= ($temp & 1);
+            $temp >>= 1;
+        }
+        $this->setFlag(self::FLAG_P, $parity == 0);
+    }
+    
+    /**
+     * Helper function for DAD instruction
+     */
+    private function dad($pair) {
+        $hl = ($this->regH << 8) | $this->regL;
+        $value = $this->getRegisterPair($pair);
+        $result = $hl + $value;
+        
+        // Set flags
+        $this->setFlag(self::FLAG_CY, $result > 0xFFFF);
+        
+        // Update HL register pair
+        $this->regH = ($result >> 8) & 0xFF;
+        $this->regL = $result & 0xFF;
+    }
+    
+    /**
+     * Helper function for DAA instruction
+     */
+    private function daa() {
+        $result = $this->regA;
+        $cy = $this->getFlag(self::FLAG_CY);
+        $ac = $this->getFlag(self::FLAG_AC);
+        
+        // Adjust lower nibble
+        if ($ac || (($result & 0x0F) > 9)) {
+            $result += 0x06;
+            $ac = true;
+        }
+        
+        // Adjust upper nibble
+        if ($cy || (($result & 0xF0) > 0x90) || (($result & 0xF0) == 0x90 && ($result & 0x0F) > 9)) {
+            $result += 0x60;
+            $cy = true;
+        } else {
+            $cy = false;
+        }
+        
+        // Set flags
+        $this->setFlag(self::FLAG_S, ($result & 0x80) != 0);
+        $this->setFlag(self::FLAG_Z, ($result & 0xFF) == 0);
+        $this->setFlag(self::FLAG_AC, $ac);
+        $this->setFlag(self::FLAG_CY, $cy);
+        
+        // Parity flag
+        $parity = 0;
+        $temp = $result & 0xFF;
+        for ($i = 0; $i < 8; $i++) {
+            $parity ^= ($temp & 1);
+            $temp >>= 1;
+        }
+        $this->setFlag(self::FLAG_P, $parity == 0);
+        
+        $this->regA = $result & 0xFF;
+    }
 }
 
 /**
