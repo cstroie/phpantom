@@ -395,7 +395,7 @@ class Altair8800 extends I8080 {
      */
     private function getCCPCode() {
         // Simple CCP that prints "CP/M>" and waits for commands
-        return [
+        $code = [
             // Print "CP/M>"
             0x21, 0x00, 0x08,  // LXI H, 0x0800  ; Point to string
             0x7E,              // MOV A, M       ; Load character
@@ -406,8 +406,6 @@ class Altair8800 extends I8080 {
             0xC3, 0x03, 0x01,  // JMP 0x0103     ; Loop
             // End - halt
             0x76,              // HLT
-            // String data at 0x0800
-            0x43, 0x50, 0x2F, 0x4D, 0x3E, 0x24  // "CP/M>$"
         ];
         
         // Load string data at 0x0800
@@ -415,6 +413,8 @@ class Altair8800 extends I8080 {
         for ($i = 0; $i < count($stringData); $i++) {
             $this->setMemory(0x0800 + $i, $stringData[$i]);
         }
+        
+        return $code;
     }
 }
 
