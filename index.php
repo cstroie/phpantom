@@ -100,6 +100,7 @@ function getInstructionName($opcode) {
         body {
             background-color: #1e1e1e;
             color: #e0e0e0;
+            font-family: 'Courier New', Courier, monospace;
         }
         
         header, main, footer {
@@ -119,7 +120,7 @@ function getInstructionName($opcode) {
             color: #4CAF50;
             padding: 1rem;
             border-radius: 5px;
-            font-family: 'Courier New', monospace;
+            font-family: 'Courier New', Courier, monospace;
             margin: 1rem 0;
             overflow-x: auto;
         }
