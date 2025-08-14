@@ -88,7 +88,7 @@ function getInstructionName($opcode) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PHPantom - Intel 8080 Emulator Demo</title>
     <!-- PicoCSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.green.min.css">
     <style>
         :root {
             --primary: var(--pico-color-green-800);
