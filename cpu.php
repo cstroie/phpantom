@@ -32,7 +32,7 @@
  *
  * PHPantom - Ghost of Past Computing
  */
-class I8080Emulator {
+class I8080 {
     // 8-bit registers
     private $regA;  // Accumulator
     private $regB;
@@ -1645,27 +1645,13 @@ class I8080Emulator {
     }
 }
 
-/**
- * Get CPU information
- *
- * @return array CPU information
- */
-function get_cpu_info() {
-    $cpu_info = array();
-    
-    // Implementation would go here
-    // This is just a placeholder function
-    
-    return $cpu_info;
-}
-
 // Test the emulator
 function test_emulator() {
     echo "Testing I8080 Emulator\n";
     echo "=====================\n";
     
     // Create emulator instance
-    $cpu = new I8080Emulator();
+    $cpu = new I8080();
     
     // Load a simple program:
     // MVI A, 0x05    ; Load 5 into register A
@@ -1698,11 +1684,11 @@ function test_emulator() {
     echo "Result: A = " . $cpu->getRegister('A') . " (0x" . sprintf("%02X", $cpu->getRegister('A')) . ")\n";
     
     // Check flags
-    echo "Flags - S:" . ($cpu->getFlag(I8080Emulator::FLAG_S) ? "1" : "0") . 
-         " Z:" . ($cpu->getFlag(I8080Emulator::FLAG_Z) ? "1" : "0") . 
-         " AC:" . ($cpu->getFlag(I8080Emulator::FLAG_AC) ? "1" : "0") . 
-         " P:" . ($cpu->getFlag(I8080Emulator::FLAG_P) ? "1" : "0") . 
-         " CY:" . ($cpu->getFlag(I8080Emulator::FLAG_CY) ? "1" : "0") . "\n";
+    echo "Flags - S:" . ($cpu->getFlag(I8080::FLAG_S) ? "1" : "0") . 
+         " Z:" . ($cpu->getFlag(I8080::FLAG_Z) ? "1" : "0") . 
+         " AC:" . ($cpu->getFlag(I8080::FLAG_AC) ? "1" : "0") . 
+         " P:" . ($cpu->getFlag(I8080::FLAG_P) ? "1" : "0") . 
+         " CY:" . ($cpu->getFlag(I8080::FLAG_CY) ? "1" : "0") . "\n";
 }
 
 // Run the test if this file is executed directly
