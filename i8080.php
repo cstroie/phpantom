@@ -1085,19 +1085,6 @@ class I8080 {
                 break;
                 
             // Restart instructions
-            case 0xC0: // RST 0
-            case 0xC8: // RST 1
-            case 0xD0: // RST 2
-            case 0xD8: // RST 3
-            case 0xE0: // RST 4
-            case 0xE8: // RST 5
-            case 0xF0: // RST 6
-            case 0xF8: // RST 7
-                $this->memory[($this->regSP - 1) & 0xFFFF] = ($this->regPC >> 8) & 0xFF;
-                $this->memory[($this->regSP - 2) & 0xFFFF] = $this->regPC & 0xFF;
-                $this->regSP = ($this->regSP - 2) & 0xFFFF;
-                $this->regPC = (($opcode >> 3) & 0x07) * 8;
-                break;
             case 0xC7: // RST 0
                 $this->memory[($this->regSP - 1) & 0xFFFF] = ($this->regPC >> 8) & 0xFF;
                 $this->memory[($this->regSP - 2) & 0xFFFF] = $this->regPC & 0xFF;
