@@ -563,8 +563,8 @@ class CPM_CCP {
  * Complete Altair 8800 System with CP/M
  */
 class AltairCPMSystem {
-    private $altair;
-    private $ccp;
+    protected $altair;
+    protected $ccp;
     
     public function __construct() {
         $this->altair = new Altair8800();
@@ -635,12 +635,19 @@ function test_altair() {
     
     // Show final register state
     echo "\nFinal CPU State:\n";
-    $registers = $system->altair->getRegisters();
+    $registers = $system->getRegisters();
     foreach ($registers as $reg => $value) {
         if (is_numeric($value)) {
             echo sprintf("%-3s: 0x%04X (%d)\n", $reg, $value, $value);
         }
     }
+}
+
+/**
+ * Get registers from the Altair CPU
+ */
+function getRegisters() {
+    return $this->altair->getRegisters();
 }
 
 // Run the test if this file is executed directly
