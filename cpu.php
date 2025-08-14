@@ -1,15 +1,15 @@
 <?php
 /**
- * CPU Information Utility
+ * PHPantom - Ghost of Past Computing
  *
- * This file is part of the System Information project.
+ * Intel 8080 CPU Emulator written in PHP
  *
- * @package     SystemInfo
- * @author      Your Name <your.email@example.com>
- * @copyright   2025 Your Name
+ * @package     PHPantom
+ * @author      Costin Stroie <costinstroie@eridu.eu.org>
+ * @copyright   2025 Costin Stroie
  * @license     http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  * @version     1.0.0
- * @link        https://github.com/yourusername/system-info
+ * @link        https://github.com/yourusername/phpantom
  */
 
 /**
@@ -29,6 +29,8 @@
 
 /**
  * Intel 8080 CPU Emulator
+ *
+ * PHPantom - Ghost of Past Computing
  */
 class I8080Emulator {
     // 8-bit registers
