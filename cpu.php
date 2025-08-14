@@ -159,6 +159,19 @@ class I8080Emulator {
     }
     
     /**
+     * Load a block of binary data into memory at a specific location
+     * 
+     * @param int $startAddress The memory address to start loading at
+     * @param array $data Array of byte values to load
+     */
+    public function loadMemoryBlock($startAddress, $data) {
+        for ($i = 0; $i < count($data); $i++) {
+            $address = ($startAddress + $i) & 0xFFFF;
+            $this->setMemory($address, $data[$i]);
+        }
+    }
+    
+    /**
      * Get 16-bit register pair value
      */
     public function getRegisterPair($pair) {
